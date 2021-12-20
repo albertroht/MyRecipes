@@ -1,0 +1,31 @@
+.recipe {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  position: relative;
+  width: 400px;
+  margin: 0 auto;
+  /* background-color: #e27d60; */
+}
+
+.recipe > div {
+  width: 100%;
+}
+
+.recipe > div > div {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.recipe .functions :nth-child(1) {
+  position: absolute;
+  right: -80px;
+  top: 0;
+}
+
+a {
+  cursor: pointer;
+}

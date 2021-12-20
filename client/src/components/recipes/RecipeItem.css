@@ -1,0 +1,60 @@
+.recipe-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  background-color: var(--primary-color);
+  color: var(--light-color);
+  /* font-size: 1px; */
+  margin: 1rem;
+  cursor: pointer;
+}
+
+.recipe-item > p,
+.recipe-item > div {
+  padding: 0.25rem 1rem;
+  width: 100%;
+}
+
+.recipe-item > div > div {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  /* position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem; */
+  /* padding: 3rem 2rem; */
+}
+
+.recipe-item-img {
+  position: relative;
+  width: 80%; /* The size you want */
+}
+
+.recipe-item-img:after {
+  content: '';
+  display: block;
+  padding-bottom: 100%; /* The padding depends on the width, not on the height, so with a padding-bottom of 100% you will get a square */
+}
+
+.recipe-item-img img {
+  /* width: 80%;
+  margin: 1rem;
+  border: 1px solid var(--light-color);
+  border-radius: 8px; */
+  position: absolute; /* Take your picture out of the flow */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; /* Make the picture taking the size of it's parent */
+  width: 100%; /* This if for the object-fit */
+  height: 100%; /* This if for the object-fit */
+  object-fit: cover; /* Equivalent of the background-size: cover; of a background-image */
+  object-position: center;
+  padding: 0.5rem;
+}
