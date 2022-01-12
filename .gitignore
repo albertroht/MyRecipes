@@ -1,9 +1,10 @@
 node_modules/
 uploads/*
 config/default.json
+.env
 
 # production
-/client//build
+/client/build
 
 # misc
 /client/.DS_Store
@@ -11,6 +12,7 @@ config/default.json
 /client/.env.development.local
 /client/.env.test.local
 /client/.env.production.local
+/client/.eslintcache
 
 npm-debug.log*
 yarn-debug.log*

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const config = require('config');
+require('dotenv').config();
 
 // authentification middleware
 module.exports = function (req, res, next) {
@@ -12,7 +12,7 @@ module.exports = function (req, res, next) {
 
   try {
     // verify token with jsonwebtoken
-    const decoded_payload = jwt.verify(token, config.get('jwtSecret'));
+    const decoded_payload = jwt.verify(token, process.env.jwtSecret);
     // add user to req
     req.user = decoded_payload.user;
     // call next at the end of middleware if successfull
