@@ -46,14 +46,14 @@ const RecipeState = props => {
         },
       };
       const res = await axios.post('/api/recipes', formData, config);
-      const resData = await JSON.parse(res.data);
+      const resData = res.data;
       const resRecipe = resData.recipe;
       const resRecipeImage = resData.recipeImage;
       dispatch({
         type: ADD_RECIPE,
         payload: {
           recipe: resRecipe,
-          recipeImage: JSON.stringify(resRecipeImage),
+          recipeImage: resRecipeImage,
         },
       });
       return resRecipe._id;
@@ -88,7 +88,7 @@ const RecipeState = props => {
         type: ADD_RECIPE,
         payload: {
           recipe: res.data.recipe,
-          recipeImage: JSON.stringify(res.data.image),
+          recipeImage: res.data.image,
         },
       });
 

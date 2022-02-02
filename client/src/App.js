@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './components/pages/Home';
 import Recipe from './components/pages/Recipe';
@@ -28,46 +28,46 @@ function App() {
         <AlertState>
           <div className='App'>
             <Router>
-              <Fragment>
-                <Navbar />
+              {/* <Fragment> */}
+              <Navbar />
 
-                <div className='container'>
-                  <Alert />
-                  <Switch>
-                    <Route exact path='/' component={Home} />
-                    <Route
-                      path='/private/:page'
-                      render={props => <Home {...props} />}
-                    />
-                    <Route
-                      path='/public/:page'
-                      render={props => <Home {...props} />}
-                    />
-                    <PrivateRoute
-                      exact
-                      path='/recipes/add'
-                      component={AddRecipe}
-                    />
-                    <PrivateRoute
-                      exact
-                      path='/recipes/update'
-                      component={AddRecipe}
-                    />
-                    <Route exact path='/login' component={Login} />
-                    <Route exact path='/register' component={Register} />
-                    <PrivateRoute
-                      exact
-                      path='/recipe/private/:id'
-                      component={props => <Recipe {...props} />}
-                    />
-                    <Route
-                      exact
-                      path='/recipe/public/:id'
-                      render={props => <Recipe {...props} />}
-                    />
-                  </Switch>
-                </div>
-              </Fragment>
+              <div className='container'>
+                <Alert />
+                <Switch>
+                  <Route exact path='/' component={Home} />
+                  <Route
+                    path='/private/:page'
+                    render={props => <Home {...props} />}
+                  />
+                  <Route
+                    path='/public/:page'
+                    render={props => <Home {...props} />}
+                  />
+                  <PrivateRoute
+                    exact
+                    path='/recipes/add'
+                    component={AddRecipe}
+                  />
+                  <PrivateRoute
+                    exact
+                    path='/recipes/update'
+                    component={AddRecipe}
+                  />
+                  <Route exact path='/login' component={Login} />
+                  <Route exact path='/register' component={Register} />
+                  <PrivateRoute
+                    exact
+                    path='/recipe/private/:id'
+                    component={props => <Recipe {...props} />}
+                  />
+                  <Route
+                    exact
+                    path='/recipe/public/:id'
+                    render={props => <Recipe {...props} />}
+                  />
+                </Switch>
+              </div>
+              {/* </Fragment> */}
             </Router>
           </div>
         </AlertState>

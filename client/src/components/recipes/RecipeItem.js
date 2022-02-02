@@ -10,16 +10,20 @@ const RecipeItem = ({ recipe }) => {
   const [image, setImage] = useState('https://via.placeholder.com/250');
 
   const getImage = async () => {
+    console.log('getImage');
     if (recipe._id in recipeImages) {
-      if (recipeImages[recipe._id].length > 10) {
-        const buf = Buffer.from(JSON.parse(recipeImages[recipe._id]).data);
+      if (
+        recipeImages[recipe._id] &&
+        recipeImages[recipe._id].data.length > 10
+      ) {
+        const buf = Buffer.from(recipeImages[recipe._id].data);
         const datajpg = 'data:image/jpeg;base64,' + buf.toString('base64');
         setImage(datajpg);
       }
     } else {
-      const data = await recipeContext.getImage(recipe);
-      if (data.length > 0) {
-        const buf = Buffer.from(JSON.parse(data).data);
+      const buffer = await recipeContext.getImage(recipe);
+      if (buffer.data && buffer.data.length > 0) {
+        const buf = Buffer.from(buffer.data);
         const datajpg = 'data:image/jpeg;base64,' + buf.toString('base64');
         setImage(datajpg);
       }

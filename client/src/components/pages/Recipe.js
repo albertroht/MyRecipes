@@ -40,10 +40,11 @@ const Recipe = ({ match, history }) => {
   const loadImage = async () => {
     try {
       if (match.params.id in recipeImages) {
-        if (recipeImages[match.params.id].length > 10) {
-          const buf = Buffer.from(
-            JSON.parse(recipeImages[match.params.id]).data
-          );
+        if (
+          recipeImages[match.params.id] &&
+          recipeImages[match.params.id].data.length > 10
+        ) {
+          const buf = Buffer.from(recipeImages[match.params.id].data);
           const datajpg = 'data:image/jpeg;base64,' + buf.toString('base64');
           setImage(datajpg);
         }
@@ -52,7 +53,7 @@ const Recipe = ({ match, history }) => {
           type: ref_basepath,
           _id: match.params.id,
         });
-        const buf = Buffer.from(JSON.parse(imageData).data);
+        const buf = Buffer.from(imageData.data);
         const datajpg = 'data:image/jpeg;base64,' + buf.toString('base64');
         setImage(datajpg);
       }

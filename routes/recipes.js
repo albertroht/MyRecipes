@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs').promises;
+// const fs = require('fs').promises;
 const auth = require('../middleware/auth');
 const fileUpload = require('../middleware/fileUpload');
 const Recipe = require('../models/Recipe');
@@ -61,17 +61,17 @@ router.get('/:id', auth, async (req, res) => {
     );
 
     if (recipe.user == req.user.id || req.user.role === 'admin') {
-      // find image from db and load from server
-      const image = await Image.findOne({ recipe: recipe._id });
-      if (image && image._id) {
-        try {
-          const imageBuffer = await fs.readFile(`uploads/${image._id}.png`);
-          recipe.image = imageBuffer;
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      // const image = await Image.findOne({ recipe: recipe._id });
+      // if (image && image._id) {
+      //   try {
+      //     const imageBuffer = await fs.readFile(`uploads/${image._id}.png`);
+      //     recipe.image = imageBuffer;
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // }
 
+      console.log(recipe);
       res.json(JSON.stringify(recipe));
     } else {
       return res.status(401).json({ msg: 'Not authorized' });
@@ -111,16 +111,18 @@ router.get('/public/image/:id', async (req, res) => {
     );
 
     if (recipe.type == 'public') {
-      const image = await Image.findOne({ recipe: recipe._id });
-      if (image && image._id) {
-        try {
-          const imageBuffer = await fs.readFile(`uploads/${image._id}.png`);
-          recipe.image = imageBuffer;
-          const recipe_json = recipe.toJSON();
-          res.json(JSON.stringify(recipe_json.image));
-        } catch (error) {
-          console.log(error);
-        }
+      // const image = await Image.findOne({ recipe: recipe._id });
+      // if (image && image._id) {
+      //   try {
+      //     const imageBuffer = await fs.readFile(`uploads/${image._id}.png`);
+      //     recipe.image = imageBuffer;
+      //     const recipe_json = recipe.toJSON();
+      //     res.json(JSON.stringify(recipe_json.image));
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      if (recipe.image) {
+        res.json(JSON.stringify(recipe.image));
       } else {
         res.status(200).send('');
       }
@@ -147,17 +149,19 @@ router.get('/private/image/:id', auth, async (req, res) => {
       return res.status(401).json({ msg: 'Not authorized' });
     }
 
-    const image = await Image.findOne({ recipe: recipe._id });
-    if (image && image._id) {
-      try {
-        const imageBuffer = await fs.readFile(`uploads/${image._id}.png`);
-        recipe.image = imageBuffer;
-        const recipe_json = recipe.toJSON();
-        res.json(JSON.stringify(recipe_json.image));
-      } catch (error) {
-        console.log(error);
-        res.status(500).send('Server error');
-      }
+    if (recipe.image) {
+      // const image = await Image.findOne({ recipe: recipe._id });
+      // if (image && image._id) {
+      //   try {
+      //     const imageBuffer = await fs.readFile(`uploads/${image._id}.png`);
+      //     recipe.image = imageBuffer;
+      //     const recipe_json = recipe.toJSON();
+      //     res.json(JSON.stringify(recipe_json.image));
+      //   } catch (error) {
+      //     console.log(error);
+      //     res.status(500).send('Server error');
+      //   }
+      res.send(JSON.stringify(recipe.image));
     } else {
       res.status(200).send('');
     }
@@ -177,31 +181,37 @@ router.post('/', [auth, fileUpload.single('image')], async (req, res) => {
       user: req.user.id,
     });
 
-    const recipe = await newRecipe.save();
-    console.log(`recipe ${recipe._id} saved on db`);
-
-    // TODO: save files elsewhere and refere to savepath in db
     let recipeImage = '';
     if (req.file) {
-      // recipeImage = req.file;
-      const NewImage = new Image({
-        recipe: recipe._id,
-      });
-      const image = await NewImage.save();
-
-      await fs.writeFile(
-        `uploads/${image._id}.png`,
-        req.file.buffer,
-        'base64',
-        function (err) {
-          console.log(err);
-        }
-      );
-
-      recipeImage = await fs.readFile(`uploads/${image._id}.png`);
+      newRecipe.image = req.file.buffer;
+      recipeImage = req.file.buffer;
     }
 
-    res.json(JSON.stringify({ recipe, recipeImage }));
+    const recipe = await newRecipe.save();
+    delete recipe.image;
+
+    // TODO: save files elsewhere and refere to savepath in db
+    // let recipeImage = '';
+    // if (req.file) {
+    //   // recipeImage = req.file;
+    //   const NewImage = new Image({
+    //     recipe: recipe._id,
+    //   });
+    //   const image = await NewImage.save();
+
+    //   await fs.writeFile(
+    //     `uploads/${image._id}.png`,
+    //     req.file.buffer,
+    //     'base64',
+    //     function (err) {
+    //       console.log(err);
+    //     }
+    //   );
+
+    //   recipeImage = await fs.readFile(`uploads/${image._id}.png`);
+    // }
+
+    res.json({ recipe, recipeImage });
   } catch (error) {
     console.log(error);
     res.status(500).send('Server error');
@@ -215,7 +225,7 @@ router.put('/:id', [auth, fileUpload.single('image')], async (req, res) => {
   try {
     const recipeFields = { ...JSON.parse(req.body.recipe) };
     let recipe = await Recipe.findById(req.params.id);
-    let image;
+    // let image;
     if (!recipe) {
       return res.status(404).json({ msg: 'Recipe not found' });
     }
@@ -226,27 +236,27 @@ router.put('/:id', [auth, fileUpload.single('image')], async (req, res) => {
     }
 
     if (req.file) {
-      imageObject = await Image.findOne({ recipe: recipe._id });
-      let image_id;
-      if (imageObject) {
-        image_id = imageObject._id;
-      } else {
-        const newImage = new Image({ recipe: recipe._id });
-        await newImage.save();
-        image_id = newImage._id;
-      }
+      // imageObject = await Image.findOne({ recipe: recipe._id });
+      // let image_id;
+      // if (imageObject) {
+      //   image_id = imageObject._id;
+      // } else {
+      //   const newImage = new Image({ recipe: recipe._id });
+      //   await newImage.save();
+      //   image_id = newImage._id;
+      // }
 
-      await fs.writeFile(
-        `uploads/${image_id}.png`,
-        req.file.buffer,
-        'base64',
-        function (err) {
-          console.log(err);
-        }
-      );
+      // await fs.writeFile(
+      //   `uploads/${image_id}.png`,
+      //   req.file.buffer,
+      //   'base64',
+      //   function (err) {
+      //     console.log(err);
+      //   }
+      // );
 
-      const imageBuffer = await fs.readFile(`uploads/${image_id}.png`);
-      image = imageBuffer;
+      // const imageBuffer = await fs.readFile(`uploads/${image_id}.png`);
+      recipeFields.image = req.file.buffer;
     }
 
     recipe = await Recipe.findByIdAndUpdate(
@@ -257,7 +267,8 @@ router.put('/:id', [auth, fileUpload.single('image')], async (req, res) => {
 
     if (req.file) {
     }
-    res.json({ recipe, image });
+    delete recipe.image;
+    res.json({ recipe, image: recipe.image });
   } catch (error) {
     console.log(error);
     res.status(500).send('Server error');
@@ -279,11 +290,11 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(401).json({ msg: 'Not authorized' });
     }
 
-    const images = await Image.find({ recipe: recipe._id });
-    images.forEach(image => {
-      fs.unlink(`uploads/${image._id}.png`);
-    });
-    await Image.deleteMany({ recipe: recipe._id });
+    // const images = await Image.find({ recipe: recipe._id });
+    // images.forEach(image => {
+    //   fs.unlink(`uploads/${image._id}.png`);
+    // });
+    // await Image.deleteMany({ recipe: recipe._id });
     await Recipe.findByIdAndRemove(recipe._id);
     res.json({ msg: 'Recipe deleted' });
   } catch (error) {
